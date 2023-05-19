@@ -1,0 +1,6 @@
+{
+   "*.(ts|tsx|js)": [
+        "prettier --write",
+        "eslint --fix --ext .js,.jsx,.ts,.tsx --format=pretty ./"
+      ]
+}
