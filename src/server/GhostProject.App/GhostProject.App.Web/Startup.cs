@@ -32,7 +32,6 @@ namespace GhostProject.App.Web
                 optionsBuilder.UseNpgsql(_configuration.GetConnectionString("AppDatabase"), opt =>
                     opt.MigrationsAssembly("GhostProject.App.DbMigrations"));
             });
-            
 
 
             services.AddMemoryCache();
@@ -52,18 +51,17 @@ namespace GhostProject.App.Web
                 .AddNewtonsoftJson(opt =>
                     opt.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
-            if (_env.IsDevelopment())
+            services.AddCors(options =>
             {
-                services.AddCors(options =>
-                {
-                    options.AddDefaultPolicy(
-                        builder =>
-                        {
-                            builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-                                .WithOrigins("http://localhost:3000", "http://localhost:3001");
-                        });
-                });
-            }
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials()
+                            .AllowAnyOrigin();
+                    });
+            });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddOpenApiDocument(configure => { configure.Title = "Ghost Recruiter API"; });
