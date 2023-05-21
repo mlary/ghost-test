@@ -23,7 +23,8 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build "src/server/GhostProject.App/GhostProject.App.Web/GhostProject.App.Web.csproj" --configuration Release
+        working-directory:  src/server/GhostProject.App
+        run: dotnet build "/GhostProject.App.Web/GhostProject.App.Web.csproj" --configuration Release
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
