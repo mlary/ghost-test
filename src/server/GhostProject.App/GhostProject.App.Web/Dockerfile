@@ -17,5 +17,6 @@ RUN dotnet build "GhostProject.App.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "GhostProject.App.Web.csproj" -c Release -o /app/publish
+RUN dotnet ef database update  --startup-project LRW.InsightsPortal.BA.App.Web
 
 FROM base AS final
