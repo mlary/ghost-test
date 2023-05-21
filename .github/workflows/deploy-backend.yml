@@ -1,0 +1,42 @@
+name: Trigger auto deployment for ghost-container
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '/src/server/GhostProject.App/**'
+    - '.github/workflows/ghost-container-AutoDeployTrigger-fd2b4fd8-66fd-4e3e-b6b2-02d9797efe47.yml'
+
+  # Allow mannually trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.GHOSTCONTAINER_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}
+          registryUrl: ghostcontainerregistrytest.azurecr.io
+          registryUsername: ${{ secrets.GHOSTCONTAINER_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.GHOSTCONTAINER_REGISTRY_PASSWORD }}
+          containerAppName: ghost-container
+          resourceGroup: production
+          imageToBuild: ghostcontainerregistrytest.azurecr.io/ghost-container:${{ github.sha }}
+          dockerfilePath: /src/server/GhostProject.App/GhostProject.App.Web/Dockerfile
+
+     
+
