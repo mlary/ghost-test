@@ -27,8 +27,12 @@ namespace GhostProject.App.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(optionsBuilder =>
+            {
                 optionsBuilder.UseNpgsql(_configuration.GetConnectionString("AppDatabase"), opt =>
-                    opt.MigrationsAssembly("GhostProject.App.DbMigrations")));
+                    opt.MigrationsAssembly("GhostProject.App.DbMigrations"));
+            });
+            
+
 
             services.AddMemoryCache();
             services.AddHttpContextAccessor();
@@ -70,11 +74,9 @@ namespace GhostProject.App.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (_env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseDeveloperExceptionPage();
 
+            app.ApplicationServices.GetService<AppDbContext>()?.Database.Migrate();
             // Serves the registered OpenAPI/Swagger documents by default on `/swagger/{documentName}/swagger.json`
             app.UseOpenApi();
 
