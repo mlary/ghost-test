@@ -1,3 +1,4 @@
+using System;
 using GhostProject.App.DataAccess;
 using GhostProject.App.Web.Filters;
 using GhostProject.App.Web.Extensions;
@@ -76,10 +77,18 @@ namespace GhostProject.App.Web
         {
             app.UseDeveloperExceptionPage();
 
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            try
             {
-                var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
-                context?.Database.Migrate();
+                using (var serviceScope =
+                       app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                {
+                    var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
+                    context?.Database.Migrate();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
 
             // Serves the registered OpenAPI/Swagger documents by default on `/swagger/{documentName}/swagger.json`
