@@ -7,7 +7,7 @@ on:
     branches: 
       [ main ]
     paths:
-    - '/src/server/GhostProject.App/**'
+    - '/src/**'
     - '.github/workflows/ghost-container-AutoDeployTrigger-fd2b4fd8-66fd-4e3e-b6b2-02d9797efe47.yml'
 
   # Allow mannually trigger 
