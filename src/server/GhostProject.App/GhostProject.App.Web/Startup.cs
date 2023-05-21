@@ -101,6 +101,7 @@ namespace GhostProject.App.Web
 
             app.UseCors(x => x
                 .AllowAnyOrigin()
+                .SetIsOriginAllowed(_=>true)
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 
