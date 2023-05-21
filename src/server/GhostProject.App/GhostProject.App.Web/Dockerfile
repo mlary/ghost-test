@@ -5,11 +5,15 @@ WORKDIR /app
 EXPOSE 80
 #EXPOSE 443
 COPY . ./
-RUN dotnet restore "GhostProject.App.Web/GhostProject.App.Web.csproj" 
-RUN dotnet build "/GhostProject.App.Web/GhostProject.App.Web.csproj" -c Release -o /app/build
+WORKDIR /src
+COPY ["GhostProject.App.Web/GhostProject.App.Web.csproj", "nuget.config", "GhostProject.App.Web/"]
+RUN dotnet restore "GhostProject.App.Web/GhostProject.App.Web.csproj"
+COPY . .
+WORKDIR "/src/GhostProject.App.Web"
+RUN dotnet build "GhostProject.App.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "GhostProject.App.Web/GhostProject.App.Web.csproj" -c Release -o /app/publish	
+RUN dotnet publish "GhostProject.App.Web.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
