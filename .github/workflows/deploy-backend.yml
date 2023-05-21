@@ -36,7 +36,7 @@ jobs:
           containerAppName: ghost-container
           resourceGroup: production
           imageToBuild: ghostcontainerregistrytest.azurecr.io/ghost-container:${{ github.sha }}
-          dockerfilePath: /src/server/GhostProject.App/GhostProject.App.Web/Dockerfile
+          dockerfilePath: /src/server/GhostProject.App/Dockerfile
 
      
 
