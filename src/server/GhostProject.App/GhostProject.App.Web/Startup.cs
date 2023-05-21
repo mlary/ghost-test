@@ -99,10 +99,8 @@ namespace GhostProject.App.Web
 
             app.UseRouting();
 
-            if (_env.IsDevelopment())
-            {
-                app.UseCors();
-            }
+            app.UseCors();
+
 
             app.UseBusinessExceptionHandlerMiddleware();
 
