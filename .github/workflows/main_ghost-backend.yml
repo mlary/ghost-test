@@ -23,9 +23,11 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build "src/server/GhostProject.App/GhostProject.App.Web/GhostProject.App.Web.csproj" --configuration Release
+        working-directory: src/server/GhostProject.App
+        run: dotnet build --configuration Release
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        working-directory: src/server/GhostProject.App
+        run: dotnet publish "GhostProject.App.Web/GhostProject.App.Web.csproj" -c Release -o /app/publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
