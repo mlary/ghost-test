@@ -4,7 +4,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["src/server/GhostProject.App/GhostProject.App.Web/GhostProject.App.Web.csproj", "src/server/GhostProject.App/GhostProject.App.Web/"]
+COPY ["server/GhostProject.App/GhostProject.App.Web/GhostProject.App.Web.csproj", "server/GhostProject.App/GhostProject.App.Web/"]
 RUN dotnet restore "server/GhostProject.App/GhostProject.App.Web/GhostProject.App.Web.csproj"
 COPY . .
 WORKDIR "/src/GhostProject.App.Web"
