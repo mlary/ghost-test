@@ -41,7 +41,6 @@ public class CreateRateCommand : IRequest<RateDto>
     [Required]
     public int InterviewerInterestRate { get; set; }
     
-    [Required]
     public string Comment { get; set; }
 
     [Required]
