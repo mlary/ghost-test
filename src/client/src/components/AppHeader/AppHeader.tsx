@@ -25,7 +25,7 @@ const AppHeader = () => {
         <img css={classes.logo} src={Logo} />
       </a>
       <div css={classes.titleWrapper}>
-      <h1 css={classes.title}>Hold Recruiter Accountable Test</h1>
+      <h1 css={classes.title}>Hold Recruiter Accountable</h1>
       </div>
     </div>
   );
