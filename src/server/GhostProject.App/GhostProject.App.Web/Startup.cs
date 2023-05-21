@@ -99,7 +99,10 @@ namespace GhostProject.App.Web
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
 
             app.UseBusinessExceptionHandlerMiddleware();
