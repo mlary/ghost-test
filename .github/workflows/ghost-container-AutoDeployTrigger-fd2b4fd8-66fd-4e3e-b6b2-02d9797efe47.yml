@@ -7,7 +7,6 @@ on:
     branches: 
       [ main ]
     paths:
-    - '/src/server/GhostProject.App/**'
     - '.github/workflows/ghost-container-AutoDeployTrigger-fd2b4fd8-66fd-4e3e-b6b2-02d9797efe47.yml'
 
   # Allow mannually trigger 
@@ -29,14 +28,14 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}/src/server/GhostProject.App
+          appSourcePath: ${{ github.workspace }}
           registryUrl: ghostcontainerregistrytest.azurecr.io
           registryUsername: ${{ secrets.GHOSTCONTAINER_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.GHOSTCONTAINER_REGISTRY_PASSWORD }}
           containerAppName: ghost-container
           resourceGroup: production
           imageToBuild: ghostcontainerregistrytest.azurecr.io/ghost-container:${{ github.sha }}
-          dockerfilePath: /GhostProject.App.Web/Dockerfile
+          dockerfilePath: /src/server/GhostProject.App/GhostProject.App.Web/Dockerfile
 
      
 
