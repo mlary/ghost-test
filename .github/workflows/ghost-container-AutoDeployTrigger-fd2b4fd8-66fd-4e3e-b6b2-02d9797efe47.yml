@@ -29,7 +29,7 @@ jobs:
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}src/server/GhostProject.App/GhostProject.App.Web 
+          appSourcePath: ${{ github.workspace }}/src/server/GhostProject.App/GhostProject.App.Web 
           registryUrl: ghostcontainerregistrytest.azurecr.io
           registryUsername: ${{ secrets.GHOSTCONTAINER_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.GHOSTCONTAINER_REGISTRY_PASSWORD }}
