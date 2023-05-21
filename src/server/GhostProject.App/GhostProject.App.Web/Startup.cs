@@ -51,17 +51,12 @@ namespace GhostProject.App.Web
                 .AddNewtonsoftJson(opt =>
                     opt.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
-            services.AddCors(options =>
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowCredentials()
-                            .AllowAnyOrigin();
-                    });
-            });
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddOpenApiDocument(configure => { configure.Title = "Ghost Recruiter API"; });
@@ -99,11 +94,7 @@ namespace GhostProject.App.Web
 
             app.UseRouting();
 
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .SetIsOriginAllowed(_=>true)
-                .AllowAnyHeader()
-                .AllowAnyMethod());
+            app.UseCors("CorsPolicy");
 
 
             app.UseBusinessExceptionHandlerMiddleware();
