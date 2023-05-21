@@ -76,7 +76,15 @@ namespace GhostProject.App.Web
         {
             app.UseDeveloperExceptionPage();
 
-            app.ApplicationServices.GetService<AppDbContext>()?.Database.Migrate();
+            try
+            {
+                app.ApplicationServices.GetService<AppDbContext>()?.Database.Migrate();
+            }
+            catch
+            {
+                // ignored
+            }
+
             // Serves the registered OpenAPI/Swagger documents by default on `/swagger/{documentName}/swagger.json`
             app.UseOpenApi();
 
