@@ -7,7 +7,7 @@ WORKDIR /src
 COPY ["server/GhostProject.App/GhostProject.App.Web/GhostProject.App.Web.csproj", "server/GhostProject.App/GhostProject.App.Web/"]
 RUN dotnet restore "server/GhostProject.App/GhostProject.App.Web/GhostProject.App.Web.csproj"
 COPY . .
-WORKDIR "/src/GhostProject.App.Web"
+WORKDIR "/src/server/GhostProject.App/GhostProject.App.Web"
 RUN dotnet build "GhostProject.App.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
