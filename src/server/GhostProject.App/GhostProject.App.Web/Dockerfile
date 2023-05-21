@@ -11,7 +11,7 @@ WORKDIR "/src/GhostProject.App.Web"
 RUN dotnet build "GhostProject.App.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Store.InventoryApi.csproj" -c Release -o /app/publish
+RUN dotnet publish "GhostProject.App.Web.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
