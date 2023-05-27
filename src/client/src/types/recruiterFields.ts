@@ -1,6 +1,5 @@
 export type RecruiterFields = {
-  linkedInUrl: string;
+  linkedInProfileId: string;
   companyName: string | undefined;
-  email: string;
   recruiterId?: number;
 };

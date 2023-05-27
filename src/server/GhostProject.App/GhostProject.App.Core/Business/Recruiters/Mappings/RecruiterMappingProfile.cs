@@ -11,6 +11,8 @@ public class RecruiterMappingProfile : Profile
     {
         CreateMap<Recruiter, RecruiterDto>();
 
-        CreateMap<CreateOrUpdateRequiterCommand, Recruiter>();
+        CreateMap<CreateOrUpdateRequiterCommand, Recruiter>()
+            .ForMember(x=>x.LinkedInUrl, opt=>opt.MapFrom(src=>
+                $"https://www.linkedin.com/in/{src.LinkedInProfileId}/"));
     }
 }

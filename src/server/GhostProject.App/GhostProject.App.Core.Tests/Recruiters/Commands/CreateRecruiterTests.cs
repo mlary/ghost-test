@@ -38,7 +38,7 @@ namespace GhostProject.App.Core.Tests.Recruiters.Commands
             {
                 Surname = "test",
                 FirstName = "test",
-                LinkedInUrl = "https://linkedin.com",
+                LinkedInProfileId = "michael-larin-7b008673",
             }, CancellationToken.None);
 
             response.ShouldBeOfType<RecruiterDto>();

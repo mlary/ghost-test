@@ -26,7 +26,7 @@ const classes = {
     padding: 16,
     flexDirection: 'column',
     gap: 8,
-    minWidth: 600,
+    minWidth: 320,
     maxWidth: 1200,
   }),
 };

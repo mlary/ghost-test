@@ -25,14 +25,13 @@ public class CreateOrUpdateRequiterCommandHandler : HandlerBase<CreateOrUpdateRe
     public override async Task<RecruiterDto> Handle(CreateOrUpdateRequiterCommand request,
         CancellationToken cancellationToken)
     {
-        var result = await _recruiterRepository.GetByLinkedInUrlAsync(request.LinkedInUrl, cancellationToken);
+        var result = await _recruiterRepository.GetByProfileIdUrlAsync(request.LinkedInProfileId, cancellationToken);
         if (result != null)
         {
             Mapper.Map(request, result);
         }
         else
         {
-            
             result = Mapper.Map<Recruiter>(request);
             result.CreatedAt = DateTimeOffset.UtcNow;
             await _recruiterRepository.AddAsync(result, cancellationToken);

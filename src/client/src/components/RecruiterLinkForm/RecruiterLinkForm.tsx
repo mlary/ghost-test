@@ -7,16 +7,17 @@ import { useCallback, useEffect, useState } from 'react';
 import { CompanyDto } from '~/app/ApiClient';
 import { useAppDispatch, useAppSelector } from '~/app/store';
 import { getCompanies } from '~/slices/companies/companiesSlice';
-import { getRecruiterByLinkedIn } from '~/slices/recruiter/recruiterSlice';
+import { getRecruiterByLinkedInProfileId } from '~/slices/recruiter/recruiterSlice';
 import LoadingState from '~/types/LoadingState';
 import { RecruiterFields } from '~/types/recruiterFields';
 import { getFormikFieldProps } from '~/utils/formikHelper';
+import { getLinkedInProfileFromUrl } from '~/utils/urlHelper';
 import Spinner from '../Spinner/Spinner';
 import { RecruiterLinkFormData, initialRecruiterLinkData, recruiterLinkSchema } from './RecruiterLinkModel';
 
 const classes = {
   root: css({
-    minWidth: 400,
+    minWidth: 320,
     maxWidth: 800,
     width: '100%',
   }),
@@ -55,7 +56,7 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
   const [formData, setFormData] = useState<RecruiterLinkFormData>(initialRecruiterLinkData);
   const handleSubmit = useCallback(
     (values: RecruiterLinkFormData) => {
-      dispatch(getRecruiterByLinkedIn(values.linkedInUrl));
+      dispatch(getRecruiterByLinkedInProfileId(getLinkedInProfileFromUrl(values.linkedInUrl)));
       setFormData({ ...values, companyName, companyId: selectedCompany?.id });
     },
     [selectedCompany, companyName],
@@ -63,7 +64,11 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
 
   useEffect(() => {
     if (getRecruiterLoading === LoadingState.succeed) {
-      onComplete({ ...formData, recruiterId: targetRecruiter?.id });
+      onComplete({
+        ...formData,
+        linkedInProfileId: getLinkedInProfileFromUrl(formData.linkedInUrl),
+        recruiterId: targetRecruiter?.id,
+      });
     }
   }, [getRecruiterLoading, targetRecruiter, formData]);
 
@@ -93,15 +98,7 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
                 {...getFormikFieldProps(formik, 'linkedInUrl')}
               />
             </div>
-            <div css={classes.formItem}>
-              <div css={classes.label}>Email</div>
-              <TextField
-                required
-                placeholder="Your email address"
-                fullWidth
-                {...getFormikFieldProps(formik, 'email')}
-              />
-            </div>
+
             <div css={classes.formItem}>
               <div css={classes.label}>Company</div>
               <Autocomplete
@@ -112,6 +109,7 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
                 getOptionLabel={(item) => item.name}
                 onChange={(_, value) => {
                   setSelectedCompany(value);
+                  setCompanyName(value?.name ?? "");
                 }}
                 renderInput={(props) => (
                   <TextField

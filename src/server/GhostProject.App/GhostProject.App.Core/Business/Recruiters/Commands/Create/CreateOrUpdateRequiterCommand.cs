@@ -7,7 +7,7 @@ namespace GhostProject.App.Core.Business.Recruiters.Commands.Create;
 public class CreateOrUpdateRequiterCommand: IRequest<RecruiterDto>
 {
     [Required]
-    public string LinkedInUrl { get; set; }
+    public string LinkedInProfileId { get; set; }
 
     [Required]
     public string Surname { get; set; }

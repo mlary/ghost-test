@@ -12,10 +12,34 @@ const classes = {
     fontSize: '1rem',
   }),
   dots: css({
-    '& label:last-child': {
+    '& label:last-child': css({
       marginRight: 0,
-    },
+    }),
+    "& .MuiButtonBase-root":css({
+      '@media (max-width: 420px)': css({
+        padding: 4,
+      }),
+    }),
+    '& label':css({
+      '@media (max-width: 700px)': css({
+        marginRight: 8,
+      }),
+    })
   }),
+  rightLabel:css({
+    '@media (max-width: 700px)': css({
+      maxWidth: 300,
+    }),
+    '@media (max-width: 600px)': css({
+      maxWidth: 200,
+    }),
+    '@media (max-width: 550px)': css({
+      maxWidth: 100,
+    }),
+    '@media (max-width: 400px)': css({
+      maxWidth: 80,
+    }),
+  })
 };
 
 type DotsRateProps = {
@@ -43,7 +67,7 @@ const DotsRate = ({ leftLabel, onChange, rightLabel, value }: DotsRateProps) => 
           <FormControlLabel label="" value={option} control={<Radio />} />
         ))}
       </RadioGroup>
-      <span>{rightLabel}</span>
+      <span css={classes.rightLabel}>{rightLabel}</span>
     </div>
   );
 };

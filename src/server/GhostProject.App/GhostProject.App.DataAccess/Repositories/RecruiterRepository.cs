@@ -17,9 +17,9 @@ public class RecruiterRepository : BaseRepository<Recruiter, int>, IRecruiterRep
         _dbContext = dbContext;
     }
 
-    public async Task<Recruiter> GetByLinkedInUrlAsync(string linkedInUrl, CancellationToken cancellationToken, bool asNoTracking = false)
+    public async Task<Recruiter> GetByProfileIdUrlAsync(string profileId, CancellationToken cancellationToken, bool asNoTracking = false)
     {
-        var query = _dbContext.Recruiters.Where(x => x.LinkedInUrl == linkedInUrl);
+        var query = _dbContext.Recruiters.Where(x => x.LinkedInProfileId == profileId);
         if (asNoTracking)
         {
             query = query.AsNoTracking();

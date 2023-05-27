@@ -40,9 +40,9 @@ public class RecruitersController : AppControllerBase
         return Ok(response);
     }
 
-    [HttpGet("linkedin")]
+    [HttpGet("linkedin-profile")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RecruiterDto))]
-    public async Task<IActionResult> GetByLinkedIn([FromQuery] string linkedIn, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetByProfileId([FromQuery] string linkedIn, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetRecruiterByLinkedInLinkQuery(linkedIn), cancellationToken);
         return Ok(response);

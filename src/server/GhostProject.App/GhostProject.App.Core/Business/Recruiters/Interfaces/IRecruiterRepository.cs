@@ -7,7 +7,7 @@ namespace GhostProject.App.Core.Business.Recruiters.Interfaces;
 
 public interface IRecruiterRepository: IRepository<Recruiter, int>
 {
-    public Task<Recruiter> GetByLinkedInUrlAsync(string linkedInUrl, CancellationToken cancellationToken,
+    public Task<Recruiter> GetByProfileIdUrlAsync(string profileId, CancellationToken cancellationToken,
         bool asNoTracking = false);
 
 }

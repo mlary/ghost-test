@@ -15,11 +15,15 @@ const classes = {
     backgroundColor: 'var(--bg-main)',
     overflow:"none",
     overflowY: "auto",
+  
   }),
   container: css({
     display: 'block',
     position: 'relative',
     padding: 16,
+    '@media (max-width: 600px)': css({
+      padding: 2,
+    }),
   }),
 };
 

@@ -26,7 +26,7 @@ public class GetRecruiterByLinkedInLinkQueryHandler : HandlerBase<GetRecruiterBy
         CancellationToken cancellationToken)
     {
         var result = await _recruiterRepository.FirstAsync(new SpecificationBuilder<Recruiter>()
-            .FilterBy(x => x.LinkedInUrl == request.LinkedInUrl), cancellationToken);
+            .FilterBy(x => x.LinkedInProfileId == request.LinkedInUrl), cancellationToken);
         if (result == null)
         {
             throw new NotFoundException($"Recruiter with linkedId {request.LinkedInUrl} was not found");

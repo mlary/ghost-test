@@ -474,7 +474,7 @@ export interface IRecruitersClient {
 
     getById(id: number): Promise<RecruiterDto>;
 
-    getByLinkedIn(linkedIn: string | null | undefined): Promise<RecruiterDto>;
+    getByProfileId(linkedIn: string | null | undefined): Promise<RecruiterDto>;
 }
 
 export class RecruitersClient extends BaseClient implements IRecruitersClient {
@@ -594,8 +594,8 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
         return Promise.resolve<RecruiterDto>(null as any);
     }
 
-    getByLinkedIn(linkedIn: string | null | undefined): Promise<RecruiterDto> {
-        let url_ = this.baseUrl + "/api/recruiters/linkedin?";
+    getByProfileId(linkedIn: string | null | undefined): Promise<RecruiterDto> {
+        let url_ = this.baseUrl + "/api/recruiters/linkedin-profile?";
         if (linkedIn !== undefined && linkedIn !== null)
             url_ += "linkedIn=" + encodeURIComponent("" + linkedIn) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -608,11 +608,11 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.transformResult(url_, _response, (_response: Response) => this.processGetByLinkedIn(_response));
+            return this.transformResult(url_, _response, (_response: Response) => this.processGetByProfileId(_response));
         });
     }
 
-    protected processGetByLinkedIn(response: Response): Promise<RecruiterDto> {
+    protected processGetByProfileId(response: Response): Promise<RecruiterDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -702,69 +702,24 @@ export interface CreateRateCommand {
     cancelledInterview: boolean;
     interviewerListeningRate: number;
     interviewerInterestRate: number;
-    comment: string;
+    comment?: string | undefined;
     visitedLinkedInProfile: AnswerTypes;
     questionsRate: number;
 }
 
 export interface RecruiterDto extends BaseEntityDtoOfInteger {
-    surname?: string | undefined;
-    firstName?: string | undefined;
-    linkedInUrl?: string | undefined;
+    surname: string;
+    firstName: string;
+    linkedInUrl: string;
+    linkedInProfileId: string;
     companyId?: number | undefined;
     createdAt?: string;
     modifiedAt?: string;
-    company?: Company | undefined;
-}
-
-export interface BaseEntityOfInteger {
-    id?: number;
-}
-
-export interface Company extends BaseEntityOfInteger {
-    name?: string | undefined;
-    companyNormalizedName?: string | undefined;
-    linkedInUrl?: string | undefined;
-    recruiters?: Recruiter[] | undefined;
-    rates?: Rate[] | undefined;
-}
-
-export interface Recruiter extends BaseEntityOfInteger {
-    surname?: string | undefined;
-    firstName?: string | undefined;
-    linkedInUrl?: string | undefined;
-    companyId?: number | undefined;
-    createdAt?: string;
-    modifiedAt?: string;
-    company?: Company | undefined;
-    rates?: Rate[] | undefined;
-}
-
-export interface Rate extends BaseEntityOfInteger {
-    email?: string | undefined;
-    recruitingType?: number;
-    companyId?: number | undefined;
-    recruiterId?: number;
-    interviewRound?: number;
-    visitedLinkedInProfile?: number;
-    positionSeniorityLevel?: number;
-    lateInMinutes?: number;
-    cancelledInterview?: boolean;
-    interviewerListeningRate?: number;
-    interviewerInterestRate?: number;
-    comment?: string | undefined;
-    companyName?: string | undefined;
-    questionsRate?: number;
-    commonRating?: number;
-    isConfirmed?: boolean;
-    confirmationId?: string;
-    createdAt?: string;
-    recruiter?: Recruiter | undefined;
-    company?: Company | undefined;
+    company?: CompanyDto | undefined;
 }
 
 export interface CreateOrUpdateRequiterCommand {
-    linkedInUrl: string;
+    linkedInProfileId: string;
     surname: string;
     firstName: string;
     companyName?: string | undefined;

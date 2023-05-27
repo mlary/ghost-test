@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Button, Card, FormControlLabel, MenuItem, Radio, RadioGroup, Select, Slider, TextField } from '@mui/material';
 
 import { FormikProvider, useFormik } from 'formik';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { AnswerTypes, PositionSeniorityLevels } from '~/app/ApiClient';
 import { useAppDispatch, useAppSelector } from '~/app/store';
@@ -16,11 +16,20 @@ import GhostRate from '../GhostRate/GhostRate';
 import HelperText from '../HelperText/HelperText';
 import { RateFormData, rateFormSchema, initialRateFormData } from './RateFormSchema';
 
+const SLIDER_MARKS = [{ value: 5 }, { value: 10 }, { value: 15 }, { value: 20 }, { value: 25 }];
+
 const classes = {
   root: css({
-    minWidth: 400,
+    minWidth: 320,
     maxWidth: 1200,
     width: '100%',
+    '@media (max-width: 700px)': css({
+      fontSize: 14,
+    }),
+    '@media (max-width: 500px)': css({
+      fontSize: 13,
+      padding: 8,
+    }),
   }),
   card: css({
     display: 'flex',
@@ -31,15 +40,22 @@ const classes = {
   container: css({
     display: 'flex',
     gap: 20,
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
   }),
   roundSelect: css({
     width: 150,
+    '@media (max-width: 600px)': css({
+      width: 100,
+    }),
   }),
   rateForm: css({
     flexDirection: 'column',
     width: '80%',
     gap: 20,
     alignItems: 'center',
+    flexBasis: 800,
   }),
   formItem: css({
     width: '100%',
@@ -47,6 +63,9 @@ const classes = {
   }),
   label: css({
     fontWeight: 600,
+  }),
+  emailTip: css({
+    fontSize: 14,
   }),
   actions: css({
     display: 'flex',
@@ -58,6 +77,13 @@ const classes = {
     width: '50%',
     gap: 16,
     alignItems: 'center',
+    '@media (max-width: 800px)': css({
+      width: '100%',
+    }),
+    '& .MuiSlider-mark': css({
+      height: 13,
+      background: '#000',
+    }),
   }),
   slider: css({
     width: '70%',
@@ -76,22 +102,33 @@ const classes = {
   }),
   positionSelect: css({
     width: 300,
+    '@media (max-width: 600px)': css({
+      width: 250,
+    }),
+    '@media (max-width: 400px)': css({
+      width: 150,
+    }),
   }),
   profileWrapper: css({
     width: 300,
     flexDirection: 'column',
     gap: 20,
     padding: 4,
+    flexBasis: 300,
+    '@media (max-width: 1182px)': css({
+      flexBasis: 500,
+    }),
   }),
   profile: css({
     display: 'flex',
     width: '100%',
-    padding: 8,
     flexDirection: 'column',
     gap: 8,
     justifyContent: 'center',
-    border: '2px solid var(--bg-main)',
-    borderRadius: 10,
+  }),
+  profileItem: css({
+    fontSize: 18,
+    fontWeight: 600,
   }),
 };
 
@@ -105,6 +142,7 @@ const RateForm = () => {
   const dispatch = useAppDispatch();
   const { targetRecruiter } = useAppSelector((state) => state.recruiter);
   const { recruiterCompanies } = useAppSelector((state) => state.companies);
+  console.log(recruiterCompanies);
   const { recruiterData, createLoading, result: currentRate } = useAppSelector((state) => state.rate);
   const navigate = useNavigate();
 
@@ -124,7 +162,7 @@ const RateForm = () => {
         createRate({
           recruitingType: 0,
           recruiterId: targetRecruiter.id,
-          email: recruiterData.email,
+          email: values.email,
           companyName: recruiterData?.companyName,
           commonRating: values.commonRating ?? 0,
           interviewRound: values.interviewRound ?? 0,
@@ -146,6 +184,10 @@ const RateForm = () => {
     validationSchema: rateFormSchema,
     onSubmit: handleSubmit,
   });
+  const prevCompanies = useMemo(
+    () => recruiterCompanies.filter((company) => company.name !== recruiterData?.companyName).map((row) => row.name),
+    [recruiterCompanies, recruiterData],
+  );
 
   return (
     <FormikProvider value={formik}>
@@ -154,56 +196,51 @@ const RateForm = () => {
           <Card css={classes.card}>
             <h2 css={classes.header}>Enter rate information</h2>
             <div css={classes.container}>
-              <div css={classes.profileWrapper}>
-                <div css={classes.profile}>
-                  <div>
-                    <a href={recruiterData?.linkedInUrl} target="_blank">
-                      Entered LinkedIn link
-                    </a>
-                  </div>
-                  <div>
-                    <div>{`${targetRecruiter?.firstName ?? ''} ${targetRecruiter?.surname ?? ''}`}</div>
-                  </div>
-                  {recruiterData?.companyName && <div>{recruiterData?.companyName}</div>}
-                  {recruiterCompanies.length > 1 && (
-                    <div>
-                      Also associated with:
-                      <div>
-                        {recruiterCompanies
-                          .filter((company) => company.name !== recruiterData?.companyName)
-                          .map((row) => row.name)
-                          .join(', ')}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <div css={classes.formItem}>
-                  <div css={classes.label}>Visited LinkedIn</div>
-                  <RadioGroup
-                    row
-                    value={formik.values.visitedLinkedInProfile}
-                    name="visitedLinkedInProfile"
-                    onChange={(e) => {
-                      formik.setFieldValue('visitedLinkedInProfile', e.target.value);
-                    }}>
-                    <FormControlLabel value={AnswerTypes.Yes} control={<Radio />} label="Yes" />
-                    <FormControlLabel value={AnswerTypes.No} control={<Radio />} label="No" />
-                    <FormControlLabel value={AnswerTypes.Unknown} control={<Radio />} label="I don't know" />
-                  </RadioGroup>
-                  <HelperText {...getFormikErrorProps(formik, 'visitedLinkedInProfile')} />
-                </div>
-              </div>
-
               <div css={classes.rateForm}>
-                <div css={classes.formItem}>
-                  <GhostRate
-                    value={formik.values.commonRating}
-                    onChange={(rate) => {
-                      formik.setFieldValue('commonRating', rate);
-                    }}
-                    size={40}
-                  />
-                  <HelperText {...getFormikErrorProps(formik, 'commonRating')} />
+                <div css={classes.profileWrapper}>
+                  <div css={classes.profile}>
+                    <div css={classes.profileItem}>
+                      <div>{`${targetRecruiter?.firstName ?? ''} ${targetRecruiter?.surname ?? ''}`}</div>
+                    </div>
+                    {recruiterData?.companyName && <div>Company: {recruiterData?.companyName}</div>}
+                    {prevCompanies.length > 0 && (
+                      <div>
+                        Previous:&nbsp;
+                        <span>{prevCompanies.join(', ')}</span>
+                      </div>
+                    )}
+                    <div>
+                      <a href={targetRecruiter?.linkedInUrl} target="_blank">
+                        Entered LinkedIn link
+                      </a>
+                    </div>
+                  </div>
+                  <div css={classes.formItem}>
+                    <div css={classes.label}>Ghosted level</div>
+                    <GhostRate
+                      value={formik.values.commonRating}
+                      onChange={(rate) => {
+                        formik.setFieldValue('commonRating', rate);
+                      }}
+                      size={40}
+                    />
+                    <HelperText {...getFormikErrorProps(formik, 'commonRating')} />
+                  </div>
+                  <div css={classes.formItem}>
+                    <div css={classes.label}>Did recruiter visited LinkedIn</div>
+                    <RadioGroup
+                      row
+                      value={formik.values.visitedLinkedInProfile}
+                      name="visitedLinkedInProfile"
+                      onChange={(e) => {
+                        formik.setFieldValue('visitedLinkedInProfile', e.target.value);
+                      }}>
+                      <FormControlLabel value={AnswerTypes.Yes} control={<Radio />} label="Yes" />
+                      <FormControlLabel value={AnswerTypes.No} control={<Radio />} label="No" />
+                      <FormControlLabel value={AnswerTypes.Unknown} control={<Radio />} label="I don't know" />
+                    </RadioGroup>
+                    <HelperText {...getFormikErrorProps(formik, 'visitedLinkedInProfile')} />
+                  </div>
                 </div>
                 <div css={classes.selectWrapper}>
                   <div>
@@ -233,11 +270,15 @@ const RateForm = () => {
                   </div>
                 </div>
                 <div css={classes.formItem}>
-                  <div css={classes.label}>Intervier late</div>
+                  <div css={classes.label}>interviewer late</div>
                   <div css={classes.sliderWrapper}>
                     <span>0</span>
                     <Slider
+                      min={0}
+                      max={30}
                       css={classes.slider}
+                      valueLabelDisplay="off"
+                      marks={SLIDER_MARKS}
                       value={formik.values.lateInMinutes}
                       onChange={(_, value) => {
                         formik.setFieldValue('lateInMinutes', value);
@@ -310,6 +351,16 @@ const RateForm = () => {
                     placeholder="Additional notes here (profanity strictly inforced) 240 ch"
                     {...getFormikFieldProps(formik, 'comment')}
                   />
+                </div>
+                <div css={classes.formItem}>
+                  <div css={classes.label}>Verification email</div>
+                  <TextField
+                    required
+                    placeholder="Your email address"
+                    fullWidth
+                    {...getFormikFieldProps(formik, 'email')}
+                  />
+                  <div css={classes.emailTip}>Email will be used only to verify that you are human</div>
                 </div>
               </div>
             </div>

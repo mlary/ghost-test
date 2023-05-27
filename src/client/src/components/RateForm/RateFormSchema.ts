@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 import { AnswerTypes, PositionSeniorityLevels } from '~/app/ApiClient';
+import { EMAIL_EXPRESSION } from '~/const/regexExpressions';
 import { VALIDATION_MESSAGES } from '~/const/validationMessages';
 
 export type RateFormData = {
@@ -13,11 +14,13 @@ export type RateFormData = {
   comment?: string;
   visitedLinkedInProfile?: AnswerTypes;
   questionsRate?: number;
+  email: string;
 };
 
 export const initialRateFormData: RateFormData = {
   comment: '',
   visitedLinkedInProfile: AnswerTypes.Unknown,
+  email: '',
 };
 export const rateFormSchema = yup.object().shape({
   commonRating: yup.number().required(VALIDATION_MESSAGES.enterRequiredField),
@@ -30,4 +33,8 @@ export const rateFormSchema = yup.object().shape({
   comment: yup.string(),
   questionsRate: yup.number().required(VALIDATION_MESSAGES.enterRequiredField),
   visitedLinkedInProfile: yup.string(),
+  email: yup
+    .string()
+    .required(VALIDATION_MESSAGES.enterRequiredField)
+    .matches(EMAIL_EXPRESSION, VALIDATION_MESSAGES.enterValidEmail),
 });

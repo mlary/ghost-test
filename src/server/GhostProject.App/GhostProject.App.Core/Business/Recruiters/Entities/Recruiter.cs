@@ -14,6 +14,8 @@ public class Recruiter : BaseEntity<int>
 
     public string LinkedInUrl { get; set; }
     
+    public string LinkedInProfileId { get; set; }
+    
     public int? CompanyId { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }

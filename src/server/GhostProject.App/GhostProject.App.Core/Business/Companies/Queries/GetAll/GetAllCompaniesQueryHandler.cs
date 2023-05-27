@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,6 +23,6 @@ public class GetAllCompaniesQueryHandler : HandlerBase<GetAllCompaniesQuery, Com
     public override async Task<CompanyDto[]> Handle(GetAllCompaniesQuery request, CancellationToken cancellationToken)
     {
         var result = await _companyRepository.GetAllAsync(cancellationToken, true);
-        return Mapper.Map<CompanyDto[]>(result);
+        return Mapper.Map<CompanyDto[]>(result.OrderBy(x=>x.Name));
     }
 }

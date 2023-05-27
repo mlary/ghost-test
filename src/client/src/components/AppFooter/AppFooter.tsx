@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { Button } from '@mui/material';
 import logo from '../../assets/images/ghost.png';
 
 const classes = {
@@ -36,6 +35,7 @@ const classes = {
   copyright: css({
     color: '#fff',
     fontSize: '1.2rem',
+    textAlign: "center",
   }),
 };
 const AppFooter = () => {
@@ -43,11 +43,6 @@ const AppFooter = () => {
     <div css={classes.root}>
       <div>
         <img src={logo} css={classes.logo} />
-      </div>
-      <div>
-        <Button href='/' css={classes.rateBtn} color="primary" variant="contained">
-          Rate Recruiter
-        </Button>
       </div>
       <div css={classes.links}>
         <a>Terms & Conditions</a>

@@ -13,7 +13,7 @@ import { RecruiterPersonFormData, initialRecruiterPersonData, recruiterPersonSch
 
 const classes = {
   root: css({
-    minWidth: 400,
+    minWidth: 320,
     maxWidth: 800,
     width: '100%',
   }),
@@ -73,13 +73,14 @@ const RecruiterPersonForm = () => {
           <Card css={classes.card}>
             <h2 css={classes.header}>Enter recruiter</h2>
             <div css={classes.formItem}>
-              <div css={classes.label}>Surname</div>
-              <TextField fullWidth {...getFormikFieldProps(formik, 'surname')} />
-            </div>
-            <div css={classes.formItem}>
               <div css={classes.label}>First name</div>
               <TextField fullWidth {...getFormikFieldProps(formik, 'firstName')} />
             </div>
+            <div css={classes.formItem}>
+              <div css={classes.label}>Last name</div>
+              <TextField fullWidth {...getFormikFieldProps(formik, 'surname')} />
+            </div>
+           
             <div css={classes.actions}>
               <Button onClick={formik.submitForm} color="primary" variant="contained" css={classes.nextBtn}>
                 Next

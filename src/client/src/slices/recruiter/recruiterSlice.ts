@@ -5,8 +5,8 @@ import { initialRecruiterState } from './recruiterState';
 
 const recruitersClient: IRecruitersClient = new RecruitersClient(process.env.REACT_APP_API_URL);
 
-export const getRecruiterByLinkedIn = createAsyncThunk('recruiters/getByLinkedIn', async (linkedIn: string) => {
-  const result = await recruitersClient.getByLinkedIn(linkedIn);
+export const getRecruiterByLinkedInProfileId = createAsyncThunk('recruiters/getByProfileId', async (profileId: string) => {
+  const result = await recruitersClient.getByProfileId(profileId);
   return result;
 });
 
@@ -32,15 +32,15 @@ const recruiterSlice = createSlice({
     resetRecruiters: () => initialRecruiterState,
   },
   extraReducers: (builder) => {
-    // getRecruiterByLinkedIn
-    builder.addCase(getRecruiterByLinkedIn.pending, (state) => {
+    // getRecruiterByLinkedInProfileId
+    builder.addCase(getRecruiterByLinkedInProfileId.pending, (state) => {
       state.getRecruiterLoading = LoadingState.pending;
     });
-    builder.addCase(getRecruiterByLinkedIn.fulfilled, (state, { payload }) => {
+    builder.addCase(getRecruiterByLinkedInProfileId.fulfilled, (state, { payload }) => {
       state.getRecruiterLoading = LoadingState.succeed;
       state.targetRecruiter = payload;
     });
-    builder.addCase(getRecruiterByLinkedIn.rejected, (state, { error }) => {
+    builder.addCase(getRecruiterByLinkedInProfileId.rejected, (state, { error }) => {
       state.getRecruiterLoading = LoadingState.succeed;
       state.errorMessage = error.message;
     });
