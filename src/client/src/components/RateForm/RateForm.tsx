@@ -110,14 +110,9 @@ const classes = {
     }),
   }),
   profileWrapper: css({
-    width: 300,
     flexDirection: 'column',
     gap: 20,
     padding: 4,
-    flexBasis: 300,
-    '@media (max-width: 1182px)': css({
-      flexBasis: 500,
-    }),
   }),
   profile: css({
     display: 'flex',
