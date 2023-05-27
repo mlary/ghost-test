@@ -103,13 +103,26 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
               <div css={classes.label}>Company</div>
               <Autocomplete
                 fullWidth
+                freeSolo
+                disableClearable
                 options={companies}
+                filterOptions={(options, state) => {
+                  if (state.inputValue.length >= 3) {
+                    const normalizedValue = state.inputValue.toUpperCase();
+                    return options.filter((x) => x.companyNormalizedName.toUpperCase().includes(normalizedValue));
+                  }
+                  return [];
+                }}
                 placeholder="Recruiter Company"
                 value={selectedCompany ?? { name: companyName, id: 0, companyNormalizedName: '', linkedInUrl: '' }}
-                getOptionLabel={(item) => item.name}
+                getOptionLabel={(item) => (typeof item === 'string' ? item : item.name)}
                 onChange={(_, value) => {
-                  setSelectedCompany(value);
-                  setCompanyName(value?.name ?? "");
+                  if (typeof value === 'string') {
+                    setCompanyName(value);
+                  } else {
+                    setSelectedCompany(value);
+                    setCompanyName(value?.name ?? '');
+                  }
                 }}
                 renderInput={(props) => (
                   <TextField
