@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import { Tooltip } from '@mui/material';
 import Logo from '../../assets/images/ghost.png';
 
 const classes = {
@@ -27,7 +28,13 @@ type GhostRateProps = {
   onChange?: (value: number) => void;
 };
 
-const RATE_VALUES = [1, 2, 3, 4, 5];
+const RATE_VALUES = [
+  { rate: 1, label: 'Comunicated clearly and consistanty' },
+  { rate: 2, label: 'Some what comunicated' },
+  { rate: 3, label: 'Not selectable' },
+  { rate: 4, label: 'Ghosted me' },
+  { rate: 5, label: 'Super ghosted me' },
+];
 const GhostRate = ({ value, onChange, className, isDisabled, size, disableMiddle = true }: GhostRateProps) => {
   const handleClick = (rate: number) => () => {
     if ((disableMiddle && rate === 3) || isDisabled) {
@@ -39,14 +46,16 @@ const GhostRate = ({ value, onChange, className, isDisabled, size, disableMiddle
   };
   return (
     <div css={classes.root} className={className}>
-      {RATE_VALUES.map((rate) => (
-        <img
-          key={`rate-${rate}`}
-          onClick={handleClick(rate)}
-          style={{ width: size }}
-          src={Logo}
-          css={[classes.logo, value && value >= rate && classes.selected]}
-        />
+      {RATE_VALUES.map(({ rate, label }) => (
+        <Tooltip title={label}>
+          <img
+            key={`rate-${rate}`}
+            onClick={handleClick(rate)}
+            style={{ width: size }}
+            src={Logo}
+            css={[classes.logo, value && value >= rate && classes.selected]}
+          />
+        </Tooltip>
       ))}
     </div>
   );
