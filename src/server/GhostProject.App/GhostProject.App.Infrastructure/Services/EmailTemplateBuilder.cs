@@ -18,7 +18,7 @@ public class EmailTemplateBuilder: IEmailTemplateBuilder
     {
         var confirmationUrl = $"{_confirmationSettings.RateConfirmationAddress}/{rateId}/{confirmationId}";
         var builder = new StringBuilder();
-        builder.Append($"<h2>Thanks for your rate</h2>");
+        builder.Append($"<h2>Please click the link to confirm</h2>");
         builder.Append($"<p><a href=\"{confirmationUrl}\" target=\"_blank\">Please confirm your request</a><p>");
         return builder.ToString();
     }

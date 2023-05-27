@@ -28,7 +28,7 @@ const classes = {
     }),
     '@media (max-width: 500px)': css({
       fontSize: 13,
-      padding: 8,
+      padding: 4,
     }),
   }),
   card: css({
@@ -211,7 +211,7 @@ const RateForm = () => {
                     )}
                     <div>
                       <a href={targetRecruiter?.linkedInUrl} target="_blank">
-                        Entered LinkedIn link
+                        {targetRecruiter?.linkedInUrl ?? ''}
                       </a>
                     </div>
                   </div>
