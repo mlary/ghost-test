@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GhostProject.App.Core.Business.Rates.Commands.Confirm;
 using GhostProject.App.Core.Business.Rates.Commands.Create;
 using GhostProject.App.Core.Business.Rates.Dto;
+using GhostProject.App.Core.Business.Rates.Queries.GetAll;
 using GhostProject.App.Core.Business.Rates.Queries.GetById;
 using GhostProject.App.Web.Controllers.Base;
 using GhostProject.App.Web.Models;
@@ -57,6 +58,17 @@ public class RatesController : AppControllerBase
     public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetRateByIdQuery(id), cancellationToken);
+        return Ok(response);
+    }
+    
+    /// <summary>
+    /// Get all
+    /// </summary>
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RateDto))]
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new GetAllRatesQuery(), cancellationToken);
         return Ok(response);
     }
 }

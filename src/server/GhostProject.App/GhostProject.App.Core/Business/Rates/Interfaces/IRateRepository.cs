@@ -9,4 +9,6 @@ namespace GhostProject.App.Core.Business.Rates.Interfaces;
 public interface IRateRepository : IRepository<Rate, int>
 {
     public Task<Rate> GetByConfirmationIdAsync(Guid confirmationId, CancellationToken cancellationToken);
+    
+    public Task<Rate[]> GetAllAsync(CancellationToken cancellationToken);
 }

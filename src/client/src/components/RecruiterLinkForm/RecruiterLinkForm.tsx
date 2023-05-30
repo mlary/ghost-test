@@ -47,6 +47,7 @@ const classes = {
 type RecruiterLinkFormProps = {
   onComplete: (data: RecruiterFields) => void;
 };
+
 const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
   const dispatch = useAppDispatch();
   const { companies } = useAppSelector((state) => state.companies);

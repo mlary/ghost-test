@@ -19,5 +19,11 @@ namespace GhostProject.App.DataAccess.Repositories
 
         public async Task<Rate> GetByConfirmationIdAsync(Guid confirmationId, CancellationToken cancellationToken) =>
             await _dbContext.Rates.FirstOrDefaultAsync(x => x.ConfirmationId == confirmationId, cancellationToken);
+
+        public async Task<Rate[]> GetAllAsync(CancellationToken cancellationToken)
+        {
+            return await _dbContext.Rates.Include(x => x.Recruiter)
+                .Include(x => x.Company).ToArrayAsync(cancellationToken);
+        }
     }
 }

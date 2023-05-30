@@ -70,7 +70,7 @@ public class CreateRateCommandHandler : HandlerBase<CreateRateCommand, RateDto>
         {
             Addresses = new[] { rate.Email },
             Body = body,
-            Subject = "Rate Confirmation",
+            Subject = "Ghost Lookup Rate Verification",
         }, cancellationToken);
 
         return Mapper.Map<RateDto>(rate);

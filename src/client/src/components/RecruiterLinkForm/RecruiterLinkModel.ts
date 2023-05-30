@@ -20,7 +20,7 @@ export const recruiterLinkSchema = yup.object().shape({
     .test(
       'linkedinMatch',
       VALIDATION_MESSAGES.enterValidUrl,
-      (value) => value?.includes('https://www.linkedin.com/in/') ?? false,
+      (value) => value?.includes('linkedin.com/in/') ?? false,
     )
     .matches(URL_EXPRESSION, VALIDATION_MESSAGES.enterValidUrl),
   companyName: yup.string().nullable().notRequired(),

@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using GhostProject.App.Core.Business.Companies.Dto;
 using GhostProject.App.Core.Business.Rates.Primitives;
+using GhostProject.App.Core.Business.Recruiters.Dto;
 using GhostProject.App.Core.Common;
 
 namespace GhostProject.App.Core.Business.Rates.Dto;
@@ -51,6 +53,10 @@ public class RateDto: BaseEntityDto<int>
     
     [Required]
     public bool IsConfirmed { get; set; }
+    
+    public RecruiterDto Recruiter { get; set; }
+    
+    public CompanyDto Company { get; set; }
 
   
 }

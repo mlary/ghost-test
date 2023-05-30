@@ -337,6 +337,8 @@ export interface IRatesClient {
 
     create(command: CreateRateCommand): Promise<RateDto>;
 
+    getAll(): Promise<RateDto>;
+
     confirm(confirmationId: string): Promise<void>;
 
     getById(id: number): Promise<RateDto>;
@@ -387,6 +389,39 @@ export class RatesClient extends BaseClient implements IRatesClient {
             let result404: any = null;
             result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ErrorResponse;
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RateDto>(null as any);
+    }
+
+    getAll(): Promise<RateDto> {
+        let url_ = this.baseUrl + "/api/rates";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processGetAll(_response));
+        });
+    }
+
+    protected processGetAll(response: Response): Promise<RateDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RateDto;
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -674,6 +709,8 @@ export interface RateDto extends BaseEntityDtoOfInteger {
     comment: string;
     questionsRate: number;
     isConfirmed: boolean;
+    recruiter?: RecruiterDto | undefined;
+    company?: CompanyDto | undefined;
 }
 
 export enum PositionSeniorityLevels {
@@ -687,6 +724,17 @@ export enum AnswerTypes {
     Yes = "Yes",
     No = "No",
     Unknown = "Unknown",
+}
+
+export interface RecruiterDto extends BaseEntityDtoOfInteger {
+    surname: string;
+    firstName: string;
+    linkedInUrl: string;
+    linkedInProfileId: string;
+    companyId?: number | undefined;
+    createdAt?: string;
+    modifiedAt?: string;
+    company?: CompanyDto | undefined;
 }
 
 export interface CreateRateCommand {
@@ -705,17 +753,6 @@ export interface CreateRateCommand {
     comment?: string | undefined;
     visitedLinkedInProfile: AnswerTypes;
     questionsRate: number;
-}
-
-export interface RecruiterDto extends BaseEntityDtoOfInteger {
-    surname: string;
-    firstName: string;
-    linkedInUrl: string;
-    linkedInProfileId: string;
-    companyId?: number | undefined;
-    createdAt?: string;
-    modifiedAt?: string;
-    company?: CompanyDto | undefined;
 }
 
 export interface CreateOrUpdateRequiterCommand {
