@@ -179,6 +179,7 @@ const RateForm = () => {
     validationSchema: rateFormSchema,
     onSubmit: handleSubmit,
   });
+
   const prevCompanies = useMemo(
     () => recruiterCompanies.filter((company) => company.name !== recruiterData?.companyName).map((row) => row.name),
     [recruiterCompanies, recruiterData],

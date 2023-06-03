@@ -665,6 +665,59 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
     }
 }
 
+export interface IUsersClient {
+
+    verify(token: string | null): Promise<RecaptchaDto>;
+}
+
+export class UsersClient extends BaseClient implements IUsersClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    verify(token: string | null): Promise<RecaptchaDto> {
+        let url_ = this.baseUrl + "/api/users/verify/{token}";
+        if (token === undefined || token === null)
+            throw new Error("The parameter 'token' must be defined.");
+        url_ = url_.replace("{token}", encodeURIComponent("" + token));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processVerify(_response));
+        });
+    }
+
+    protected processVerify(response: Response): Promise<RecaptchaDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RecaptchaDto;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RecaptchaDto>(null as any);
+    }
+}
+
 export interface CompanyDto {
     id: number;
     name: string;
@@ -761,6 +814,11 @@ export interface CreateOrUpdateRequiterCommand {
     firstName: string;
     companyName?: string | undefined;
     companyId?: number | undefined;
+}
+
+export interface RecaptchaDto {
+    success?: boolean;
+    "error-codes"?: string[] | undefined;
 }
 
 export class ApiException extends Error {

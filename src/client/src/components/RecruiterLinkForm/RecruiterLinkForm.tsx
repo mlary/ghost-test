@@ -4,9 +4,11 @@ import { Autocomplete, Button, Card, TextField } from '@mui/material';
 
 import { FormikProvider, useFormik } from 'formik';
 import { useCallback, useEffect, useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { CompanyDto } from '~/app/ApiClient';
 import { useAppDispatch, useAppSelector } from '~/app/store';
 import { getCompanies } from '~/slices/companies/companiesSlice';
+import { resetRecaptcha, validateCaptcha } from '~/slices/recaptcha/recaptchaSlice';
 import { getRecruiterByLinkedInProfileId } from '~/slices/recruiter/recruiterSlice';
 import LoadingState from '~/types/LoadingState';
 import { RecruiterFields } from '~/types/recruiterFields';
@@ -47,20 +49,24 @@ const classes = {
 type RecruiterLinkFormProps = {
   onComplete: (data: RecruiterFields) => void;
 };
-
+const SITE_KEY = process.env.REACT_APP_SITE_KEY ?? '6Lf9dFImAAAAAI4a0AG6E9KfuzEWtrnf_Cq_hoGZ';
 const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
   const dispatch = useAppDispatch();
   const { companies } = useAppSelector((state) => state.companies);
   const [selectedCompany, setSelectedCompany] = useState<CompanyDto | null>(null);
   const [companyName, setCompanyName] = useState<string>('');
+  const [isCaptchaValid, setIsCaptchaValid] = useState<boolean | undefined>();
+  const { result: recaptchaResult, loading: recaptchaLoading } = useAppSelector((state) => state.recaptcha);
   const { getRecruiterLoading, targetRecruiter } = useAppSelector((state) => state.recruiter);
   const [formData, setFormData] = useState<RecruiterLinkFormData>(initialRecruiterLinkData);
   const handleSubmit = useCallback(
     (values: RecruiterLinkFormData) => {
-      dispatch(getRecruiterByLinkedInProfileId(getLinkedInProfileFromUrl(values.linkedInUrl)));
-      setFormData({ ...values, companyName, companyId: selectedCompany?.id });
+      if (isCaptchaValid) {
+        dispatch(getRecruiterByLinkedInProfileId(getLinkedInProfileFromUrl(values.linkedInUrl)));
+        setFormData({ ...values, companyName, companyId: selectedCompany?.id });
+      }
     },
-    [selectedCompany, companyName],
+    [selectedCompany, companyName, isCaptchaValid],
   );
 
   useEffect(() => {
@@ -82,7 +88,24 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
     validationSchema: recruiterLinkSchema,
     onSubmit: handleSubmit,
   });
-  console.log(companies);
+  useEffect(() => {
+    return () => {
+      dispatch(resetRecaptcha());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (recaptchaResult && recaptchaLoading === LoadingState.succeed) {
+      setIsCaptchaValid(recaptchaResult.success);
+    }
+  }, [recaptchaLoading, recaptchaResult]);
+
+  const handleCaptchaChanged = (token: string | null) => {
+    if (token) {
+      dispatch(validateCaptcha(token));
+    }
+  };
+
   return (
     <FormikProvider value={formik}>
       <div css={classes.root}>
@@ -137,6 +160,9 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
                   />
                 )}
               />
+            </div>
+            <div css={classes.formItem}>
+              <ReCAPTCHA sitekey={SITE_KEY} onChange={handleCaptchaChanged} />
             </div>
             <div css={classes.actions}>
               <Button onClick={formik.submitForm} color="primary" variant="contained" css={classes.nextBtn}>

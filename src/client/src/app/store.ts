@@ -3,6 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import companies from '@slices/companies/companiesSlice';
 import company from '@slices/company/companySlice';
 import rate from '@slices/rate/rateSlice';
+import recaptcha from '@slices/recaptcha/recaptchaSlice';
 import recruiter from '@slices/recruiter/recruiterSlice';
 
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     companies,
     company,
     recruiter,
+    recaptcha
   },
 });
 export type AppDispatch = typeof store.dispatch;

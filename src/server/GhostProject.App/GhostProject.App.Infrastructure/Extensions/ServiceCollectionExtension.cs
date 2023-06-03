@@ -9,6 +9,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IGoogleRecaptchaService, GoogleRecaptchaServiceService>();
         services.AddScoped<IEmailTemplateBuilder, EmailTemplateBuilder>();
         return services;
     }
