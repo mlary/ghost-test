@@ -26,9 +26,10 @@ public class RecruitersController : AppControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RecruiterDto[]))]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] GetAllRecruitersQuery query,
+        CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new GetAllRecruitersQuery(), cancellationToken);
+        var response = await _mediator.Send(query, cancellationToken);
         return Ok(response);
     }
 

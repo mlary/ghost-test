@@ -12,7 +12,9 @@ public class RecruiterMappingProfile : Profile
         CreateMap<Recruiter, RecruiterDto>();
 
         CreateMap<CreateOrUpdateRequiterCommand, Recruiter>()
-            .ForMember(x=>x.LinkedInUrl, opt=>opt.MapFrom(src=>
-                $"https://www.linkedin.com/in/{src.LinkedInProfileId}/"));
+            .ForMember(x => x.LinkedInUrl, opt => opt.MapFrom(src =>
+                $"https://www.linkedin.com/in/{src.LinkedInProfileId}/"))
+            .ForMember(dest => dest.NormalizedRecruiterName, opt => opt.MapFrom(src =>
+                $"{src.FirstName} {src.Surname}".ToUpper()));
     }
 }

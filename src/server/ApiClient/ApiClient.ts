@@ -503,7 +503,7 @@ export class RatesClient extends BaseClient implements IRatesClient {
 
 export interface IRecruitersClient {
 
-    getAll(): Promise<RecruiterDto[]>;
+    getAll(profileId: string | null | undefined, name: string | null | undefined): Promise<RecruiterDto[]>;
 
     createOrUpdate(command: CreateOrUpdateRequiterCommand): Promise<RecruiterDto>;
 
@@ -523,8 +523,12 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    getAll(): Promise<RecruiterDto[]> {
-        let url_ = this.baseUrl + "/api/recruiters";
+    getAll(profileId: string | null | undefined, name: string | null | undefined): Promise<RecruiterDto[]> {
+        let url_ = this.baseUrl + "/api/recruiters?";
+        if (profileId !== undefined && profileId !== null)
+            url_ += "ProfileId=" + encodeURIComponent("" + profileId) + "&";
+        if (name !== undefined && name !== null)
+            url_ += "Name=" + encodeURIComponent("" + name) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
