@@ -38,7 +38,7 @@
       })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
     </script>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B15RPY726M"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-11200150148"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
@@ -46,7 +46,7 @@
       }
       gtag('js', new Date());
 
-      gtag('config', 'G-B15RPY726M');
+      gtag('config', 'AW-11200150148');
     </script>
   </head>
   <body>
@@ -62,5 +62,15 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+      window.addEventListener('load', function() {
+        if (document.location.pathname.includes('confirmation')) {
+          gtag('event', 'conversion', {
+            'send_to': 'AW-11200150148/q52pCK3F_6gYEIT10twp'
+          });
+        }
+      });
+    
+    </script>
   </body>
 </html>
