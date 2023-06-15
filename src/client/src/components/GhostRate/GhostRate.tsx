@@ -29,11 +29,11 @@ type GhostRateProps = {
 };
 
 const RATE_VALUES = [
-  { rate: 1, label: 'Comunicated clearly and consistanty' },
-  { rate: 2, label: 'Some what comunicated' },
+  { rate: 1, label: 'Super ghosted me' },
+  { rate: 2, label: 'Ghosted me' },
   { rate: 3, label: 'Not selectable' },
-  { rate: 4, label: 'Ghosted me' },
-  { rate: 5, label: 'Super ghosted me' },
+  { rate: 4, label: 'Some what comunicated' },
+  { rate: 5, label: 'Comunicated clearly and consistanty' },
 ];
 const GhostRate = ({ value, onChange, className, isDisabled, size, disableMiddle = true }: GhostRateProps) => {
   const handleClick = (rate: number) => () => {

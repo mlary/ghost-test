@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Button, Card, FormControlLabel, MenuItem, Radio, RadioGroup, Select, Slider, TextField } from '@mui/material';
 
 import { FormikProvider, useFormik } from 'formik';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AnswerTypes, PositionSeniorityLevels } from '~/app/ApiClient';
 import { useAppDispatch, useAppSelector } from '~/app/store';
@@ -135,6 +135,7 @@ const POSITION_OPTIONS = [
 ];
 const RateForm = () => {
   const dispatch = useAppDispatch();
+  const [noShow, setNoShow] = useState<boolean | undefined>();
   const { targetRecruiter } = useAppSelector((state) => state.recruiter);
   const { recruiterCompanies } = useAppSelector((state) => state.companies);
   console.log(recruiterCompanies);
@@ -266,77 +267,80 @@ const RateForm = () => {
                   </div>
                 </div>
                 <div css={classes.formItem}>
-                  <div css={classes.label}>interviewer late</div>
-                  <div css={classes.sliderWrapper}>
-                    <span>0</span>
-                    <Slider
-                      min={0}
-                      max={30}
-                      css={classes.slider}
-                      valueLabelDisplay="off"
-                      marks={SLIDER_MARKS}
-                      value={formik.values.lateInMinutes}
-                      onChange={(_, value) => {
-                        formik.setFieldValue('lateInMinutes', value);
-                      }}
-                    />
-                    <span>30+ Min</span>
-                  </div>
-                </div>
-                <div css={classes.formItem}>
-                  <div css={classes.label}>
-                    Cancelled few minutes before or at a time of scheduled interview or no show
-                  </div>
+                  <div css={classes.label}>No show</div>
                   <RadioGroup
                     row
                     value={formik.values.cancelledInterview}
                     name="radio-buttons-group"
                     onChange={(e) => {
-                      formik.setFieldValue('cancelledInterview', e.target.value);
+                      setNoShow(e.target.value === "true");
+                      formik.setFieldValue('cancelledInterview', e.target.value === "true");
                     }}>
                     <FormControlLabel value={true} control={<Radio />} label="Yes" />
                     <FormControlLabel value={false} control={<Radio />} label="No" />
                   </RadioGroup>
                   <HelperText {...getFormikErrorProps(formik, 'cancelledInterview')} />
                 </div>
-                <div css={classes.formItem}>
-                  <div css={classes.label}>Questions in interview were alligned with job description</div>
-                  <DotsRate
-                    value={formik.values.questionsRate}
-                    onChange={(e) => {
-                      formik.setFieldValue('questionsRate', e);
-                    }}
-                    leftLabel="Not at all"
-                    rightLabel="Alligned"
-                  />
-                  <HelperText {...getFormikErrorProps(formik, 'questionsRate')} />
-                </div>
-                <div css={classes.formItem}>
-                  <div css={classes.label}>Interviewer spend more time talking than listening</div>
-                  <DotsRate
-                    value={formik.values.interviewerListeningRate}
-                    onChange={(e) => {
-                      formik.setFieldValue('interviewerListeningRate', e);
-                    }}
-                    leftLabel="Not at all"
-                    rightLabel="Talking over you"
-                  />
-                  <HelperText {...getFormikErrorProps(formik, 'interviewerListeningRate')} />
-                </div>
-                <div css={classes.formItem}>
-                  <div css={classes.label}>
-                    Interviewe seemed to be preocupied with something (not patying attention to your answers)
-                  </div>
-                  <DotsRate
-                    value={formik.values.interviewerInterestRate}
-                    onChange={(e) => {
-                      formik.setFieldValue('interviewerInterestRate', e);
-                    }}
-                    leftLabel="Not at all"
-                    rightLabel="Interviewer was focused on my answers and taking notes"
-                  />
-                  <HelperText {...getFormikErrorProps(formik, 'interviewerInterestRate')} />
-                </div>
+                {noShow !== true && (
+                  <>
+                    <div css={classes.formItem}>
+                      <div css={classes.label}>interviewer late</div>
+                      <div css={classes.sliderWrapper}>
+                        <span>0</span>
+                        <Slider
+                          min={0}
+                          max={30}
+                          css={classes.slider}
+                          valueLabelDisplay="off"
+                          marks={SLIDER_MARKS}
+                          value={formik.values.lateInMinutes}
+                          onChange={(_, value) => {
+                            formik.setFieldValue('lateInMinutes', value);
+                          }}
+                        />
+                        <span>30+ Min</span>
+                      </div>
+                    </div>
+                    <div css={classes.formItem}>
+                      <div css={classes.label}>Questions in interview were alligned with job description</div>
+                      <DotsRate
+                        value={formik.values.questionsRate}
+                        onChange={(e) => {
+                          formik.setFieldValue('questionsRate', e);
+                        }}
+                        leftLabel="Not at all"
+                        rightLabel="Alligned"
+                      />
+                      <HelperText {...getFormikErrorProps(formik, 'questionsRate')} />
+                    </div>
+                    <div css={classes.formItem}>
+                      <div css={classes.label}>Interviewer spend more time talking than listening</div>
+                      <DotsRate
+                        value={formik.values.interviewerListeningRate}
+                        onChange={(e) => {
+                          formik.setFieldValue('interviewerListeningRate', e);
+                        }}
+                        leftLabel="Not at all"
+                        rightLabel="Talking over you"
+                      />
+                      <HelperText {...getFormikErrorProps(formik, 'interviewerListeningRate')} />
+                    </div>
+                    <div css={classes.formItem}>
+                      <div css={classes.label}>
+                        Interviewe seemed to be preocupied with something (not patying attention to your answers)
+                      </div>
+                      <DotsRate
+                        value={formik.values.interviewerInterestRate}
+                        onChange={(e) => {
+                          formik.setFieldValue('interviewerInterestRate', e);
+                        }}
+                        leftLabel="Not at all"
+                        rightLabel="Interviewer was focused on my answers and taking notes"
+                      />
+                      <HelperText {...getFormikErrorProps(formik, 'interviewerInterestRate')} />
+                    </div>
+                  </>
+                )}
                 <div css={classes.formItem}>
                   <div css={classes.label}>Additional notes</div>
                   <TextField
