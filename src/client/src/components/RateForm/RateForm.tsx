@@ -267,7 +267,7 @@ const RateForm = () => {
                   </div>
                 </div>
                 <div css={classes.formItem}>
-                  <div css={classes.label}>Recruiter didn't show up</div>
+                  <div css={classes.label}>Did recruiter showed up for the scheduled interview?</div>
                   <RadioGroup
                     row
                     value={formik.values.cancelledInterview}
@@ -276,8 +276,8 @@ const RateForm = () => {
                       setNoShow(e.target.value === "true");
                       formik.setFieldValue('cancelledInterview', e.target.value === "true");
                     }}>
-                    <FormControlLabel value={true} control={<Radio />} label="Yes" />
-                    <FormControlLabel value={false} control={<Radio />} label="No" />
+                    <FormControlLabel value={false} control={<Radio />} label="Yes" />
+                    <FormControlLabel value={true} control={<Radio />} label="No" />
                   </RadioGroup>
                   <HelperText {...getFormikErrorProps(formik, 'cancelledInterview')} />
                 </div>
