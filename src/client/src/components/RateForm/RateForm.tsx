@@ -267,7 +267,7 @@ const RateForm = () => {
                   </div>
                 </div>
                 <div css={classes.formItem}>
-                  <div css={classes.label}>No show</div>
+                  <div css={classes.label}>Recruiter didn't show up</div>
                   <RadioGroup
                     row
                     value={formik.values.cancelledInterview}
