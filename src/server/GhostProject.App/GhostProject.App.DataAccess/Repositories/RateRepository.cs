@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GhostProject.App.Core.Business.Rates.Entities;
@@ -23,7 +24,9 @@ namespace GhostProject.App.DataAccess.Repositories
         public async Task<Rate[]> GetAllAsync(CancellationToken cancellationToken)
         {
             return await _dbContext.Rates.Include(x => x.Recruiter)
-                .Include(x => x.Company).ToArrayAsync(cancellationToken);
+                .Include(x => x.Company)
+                .OrderByDescending(x => x.Id)
+                .ToArrayAsync(cancellationToken);
         }
     }
 }

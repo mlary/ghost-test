@@ -59,6 +59,7 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
   const { result: recaptchaResult, loading: recaptchaLoading } = useAppSelector((state) => state.recaptcha);
   const { getRecruiterLoading, targetRecruiter } = useAppSelector((state) => state.recruiter);
   const [formData, setFormData] = useState<RecruiterLinkFormData>(initialRecruiterLinkData);
+  
   const handleSubmit = useCallback(
     (values: RecruiterLinkFormData) => {
       if (isCaptchaValid) {
@@ -88,6 +89,7 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
     validationSchema: recruiterLinkSchema,
     onSubmit: handleSubmit,
   });
+  console.log(formik);
   useEffect(() => {
     return () => {
       dispatch(resetRecaptcha());

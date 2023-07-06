@@ -14,8 +14,8 @@ const classes = {
     textAlign: "center",
   }),
   logo: css({
-    width: 85,
-    height: 100,
+    width: 51,
+    height: 60,
   }),
 };
 const AppHeader = () => {

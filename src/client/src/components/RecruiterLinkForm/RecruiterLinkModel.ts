@@ -1,5 +1,4 @@
 import * as yup from 'yup';
-import { URL_EXPRESSION } from '~/const/regexExpressions';
 import { VALIDATION_MESSAGES } from '~/const/validationMessages';
 
 export type RecruiterLinkFormData = {
@@ -19,9 +18,8 @@ export const recruiterLinkSchema = yup.object().shape({
     .required(`${VALIDATION_MESSAGES.enterRequiredField}. ${EXAMPLE_LINK}`)
     .test(
       'linkedinMatch',
-      VALIDATION_MESSAGES.enterValidUrl,
+      `${VALIDATION_MESSAGES.enterValidUrl}. ${EXAMPLE_LINK}`,
       (value) => value?.includes('linkedin.com/in/') ?? false,
-    )
-    .matches(URL_EXPRESSION, `${VALIDATION_MESSAGES.enterValidUrl}. ${EXAMPLE_LINK}`),
+    ),
   companyName: yup.string().nullable().notRequired(),
 });

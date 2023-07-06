@@ -14,6 +14,7 @@ import { getFormikErrorProps, getFormikFieldProps } from '~/utils/formikHelper';
 import DotsRate from '../DotsRate/DotsRate';
 import GhostRate from '../GhostRate/GhostRate';
 import HelperText from '../HelperText/HelperText';
+import Spinner from '../Spinner/Spinner';
 import { RateFormData, rateFormSchema, initialRateFormData } from './RateFormSchema';
 
 const SLIDER_MARKS = [{ value: 5 }, { value: 10 }, { value: 15 }, { value: 20 }, { value: 25 }];
@@ -137,8 +138,8 @@ const RateForm = () => {
   const dispatch = useAppDispatch();
   const [noShow, setNoShow] = useState<boolean | undefined>();
   const { targetRecruiter } = useAppSelector((state) => state.recruiter);
+  const [isPending, setIsPending] = useState(false);
   const { recruiterCompanies } = useAppSelector((state) => state.companies);
-  console.log(recruiterCompanies);
   const { recruiterData, createLoading, result: currentRate } = useAppSelector((state) => state.rate);
   const navigate = useNavigate();
 
@@ -154,6 +155,7 @@ const RateForm = () => {
   }, [createLoading]);
   const handleSubmit = useCallback((values: RateFormData) => {
     if (recruiterData && targetRecruiter) {
+      setIsPending(true);
       dispatch(
         createRate({
           recruitingType: 0,
@@ -171,7 +173,16 @@ const RateForm = () => {
           visitedLinkedInProfile: values.visitedLinkedInProfile ?? AnswerTypes.Unknown,
           questionsRate: values.questionsRate ?? 0,
         }),
-      );
+      )
+        .then((resp) => {
+          return resp;
+        })
+        .finally(() => {
+          setIsPending(false);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }, []);
 
@@ -273,8 +284,8 @@ const RateForm = () => {
                     value={formik.values.cancelledInterview}
                     name="radio-buttons-group"
                     onChange={(e) => {
-                      setNoShow(e.target.value === "true");
-                      formik.setFieldValue('cancelledInterview', e.target.value === "true");
+                      setNoShow(e.target.value === 'true');
+                      formik.setFieldValue('cancelledInterview', e.target.value === 'true');
                     }}>
                     <FormControlLabel value={false} control={<Radio />} label="Yes" />
                     <FormControlLabel value={true} control={<Radio />} label="No" />
@@ -365,8 +376,14 @@ const RateForm = () => {
               </div>
             </div>
             <div css={classes.actions}>
-              <Button onClick={formik.submitForm} color="primary" variant="contained" css={classes.nextBtn}>
+              <Button
+                onClick={formik.submitForm}
+                disabled={isPending}
+                color="primary"
+                variant="contained"
+                css={classes.nextBtn}>
                 Submit
+                {isPending && <Spinner size={24} />}
               </Button>
             </div>
           </Card>
