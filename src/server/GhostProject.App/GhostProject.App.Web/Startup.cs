@@ -1,14 +1,19 @@
 using System;
+using System.Text;
+using System.Threading.Tasks;
+using GhostProject.App.Core.Common;
 using GhostProject.App.DataAccess;
 using GhostProject.App.Web.Filters;
 using GhostProject.App.Web.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Converters;
 
 namespace GhostProject.App.Web
@@ -43,6 +48,36 @@ namespace GhostProject.App.Web
                 .RegisterAppSettings(_configuration);
 
             services.AddScoped<ValidationFilter>();
+            
+            services.Configure<AuthConfiguration>(_configuration.GetSection("Auth"));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidAudience = _configuration.GetValue<string>("Auth:Issuer"),
+                    ValidIssuer = _configuration.GetValue<string>("Auth:Issuer"),
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(_configuration.GetValue<string>("Auth:Secret")))
+                };
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = _ => Task.CompletedTask,
+                    OnForbidden = _ => Task.CompletedTask,
+                    OnAuthenticationFailed = _ =>Task.CompletedTask,
+                };
+            });
 
             services.AddRouting(r => r.LowercaseUrls = true);
 
@@ -95,7 +130,10 @@ namespace GhostProject.App.Web
             app.UseRouting();
 
             app.UseCors("CorsPolicy");
+            
+            app.UseAuthentication();
 
+            app.UseAuthorization();
 
             app.UseBusinessExceptionHandlerMiddleware();
 

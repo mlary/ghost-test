@@ -1,9 +1,9 @@
 using System;
-using GhostProject.App.Core.Common;
+using GhostProject.App.Core.Business.Users.Primitives;
 
-namespace GhostProject.App.Core.Business.Users.Entities;
+namespace GhostProject.App.Core.Business.Users.Dto;
 
-public class User : BaseEntity<int>
+public class UserDto
 {
     public string Email { get; set; }
 
@@ -12,15 +12,12 @@ public class User : BaseEntity<int>
     public string FirstName { get; set; }
 
     public string LastName { get; set; }
-
+    
     public string CompanyName { get; set; }
-
-    public int RoleId { get; set; }
-
-    public string PasswordHash { get; set; }
-
-    public DateTimeOffset CreatedAt { get; set; }
     
     public bool Blocked { get; set; }
 
+    public Roles Role { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; }
 }

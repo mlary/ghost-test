@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using GhostProject.App.Core.Business.Companies.Dto;
 using GhostProject.App.Core.Business.Rates.Primitives;
@@ -50,6 +51,8 @@ public class RateDto: BaseEntityDto<int>
 
     [Required]
     public int QuestionsRate { get; set; }
+    
+    public DateTimeOffset CreatedAt { get; set; }
     
     [Required]
     public bool IsConfirmed { get; set; }

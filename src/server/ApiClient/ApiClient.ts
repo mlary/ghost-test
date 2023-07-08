@@ -9,16 +9,35 @@
 // ReSharper disable InconsistentNaming
 
 export abstract class BaseClient {
-  transformResult(_url: string, _response: Response, processor: (_response: Response) => Promise<void | any>) {
+  transformOptions(options: any): any {
+    return {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+  }
+
+  transformResult(
+    _url: string,
+    _response: Response,
+    processor: (_response: Response) => Promise<void | any>
+  ) {
     const { status } = _response;
     if (status === INTERGTRATION_API_ERROR_CDOE) {
       _response
         .clone()
         .text()
         .then((_responseText) => {
-          const result = JSON.parse(_responseText) as IntegrationApiErrorRespponse;
+          const result = JSON.parse(
+            _responseText
+          ) as IntegrationApiErrorRespponse;
           document.dispatchEvent(
-            new CustomEvent<IntegrationApiErrorRespponse>(INTERGTRATION_API_ERROR_NOTIFICATION, { detail: result }),
+            new CustomEvent<IntegrationApiErrorRespponse>(
+              INTERGTRATION_API_ERROR_NOTIFICATION,
+              { detail: result }
+            )
           );
 
           return _responseText;
@@ -74,7 +93,9 @@ export class CompaniesClient extends BaseClient implements ICompaniesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetById(_response));
         });
     }
@@ -115,7 +136,9 @@ export class CompaniesClient extends BaseClient implements ICompaniesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processDelete(_response));
         });
     }
@@ -150,7 +173,9 @@ export class CompaniesClient extends BaseClient implements ICompaniesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetByRecruiterId(_response));
         });
     }
@@ -189,7 +214,9 @@ export class CompaniesClient extends BaseClient implements ICompaniesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetAll(_response));
         });
     }
@@ -232,7 +259,9 @@ export class CompaniesClient extends BaseClient implements ICompaniesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processUpdate(_response));
         });
     }
@@ -269,7 +298,9 @@ export class CompaniesClient extends BaseClient implements ICompaniesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processCreate(_response));
         });
     }
@@ -304,7 +335,9 @@ export class CompaniesClient extends BaseClient implements ICompaniesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetByName(_response));
         });
     }
@@ -370,7 +403,9 @@ export class RatesClient extends BaseClient implements IRatesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processCreate(_response));
         });
     }
@@ -409,7 +444,9 @@ export class RatesClient extends BaseClient implements IRatesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetAll(_response));
         });
     }
@@ -444,7 +481,9 @@ export class RatesClient extends BaseClient implements IRatesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processConfirm(_response));
         });
     }
@@ -478,7 +517,9 @@ export class RatesClient extends BaseClient implements IRatesClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetById(_response));
         });
     }
@@ -538,7 +579,9 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetAll(_response));
         });
     }
@@ -575,7 +618,9 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processCreateOrUpdate(_response));
         });
     }
@@ -611,7 +656,9 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetById(_response));
         });
     }
@@ -646,7 +693,9 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processGetByProfileId(_response));
         });
     }
@@ -672,6 +721,22 @@ export class RecruitersClient extends BaseClient implements IRecruitersClient {
 export interface IUsersClient {
 
     verify(token: string | null): Promise<RecaptchaDto>;
+
+    authorize(command: AuthenticateCommand): Promise<RecaptchaDto>;
+
+    create(command: CreateUserCommand): Promise<RecaptchaDto>;
+
+    update(command: UpdateUserCommand): Promise<UserDto>;
+
+    getAll(): Promise<UserDto[]>;
+
+    changeStatus(id: number, blocked: boolean): Promise<void>;
+
+    delete(id: number): Promise<void>;
+
+    getById(id: number): Promise<UserDto>;
+
+    getCurrent(): Promise<UserDto>;
 }
 
 export class UsersClient extends BaseClient implements IUsersClient {
@@ -699,7 +764,9 @@ export class UsersClient extends BaseClient implements IUsersClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.transformResult(url_, _response, (_response: Response) => this.processVerify(_response));
         });
     }
@@ -719,6 +786,304 @@ export class UsersClient extends BaseClient implements IUsersClient {
             });
         }
         return Promise.resolve<RecaptchaDto>(null as any);
+    }
+
+    authorize(command: AuthenticateCommand): Promise<RecaptchaDto> {
+        let url_ = this.baseUrl + "/api/users/auth";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processAuthorize(_response));
+        });
+    }
+
+    protected processAuthorize(response: Response): Promise<RecaptchaDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RecaptchaDto;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RecaptchaDto>(null as any);
+    }
+
+    create(command: CreateUserCommand): Promise<RecaptchaDto> {
+        let url_ = this.baseUrl + "/api/users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processCreate(_response));
+        });
+    }
+
+    protected processCreate(response: Response): Promise<RecaptchaDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RecaptchaDto;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RecaptchaDto>(null as any);
+    }
+
+    update(command: UpdateUserCommand): Promise<UserDto> {
+        let url_ = this.baseUrl + "/api/users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processUpdate(_response));
+        });
+    }
+
+    protected processUpdate(response: Response): Promise<UserDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserDto;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserDto>(null as any);
+    }
+
+    getAll(): Promise<UserDto[]> {
+        let url_ = this.baseUrl + "/api/users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processGetAll(_response));
+        });
+    }
+
+    protected processGetAll(response: Response): Promise<UserDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserDto[];
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserDto[]>(null as any);
+    }
+
+    changeStatus(id: number, blocked: boolean): Promise<void> {
+        let url_ = this.baseUrl + "/api/users/status/{id}/{blocked}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blocked === undefined || blocked === null)
+            throw new Error("The parameter 'blocked' must be defined.");
+        url_ = url_.replace("{blocked}", encodeURIComponent("" + blocked));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "PATCH",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processChangeStatus(_response));
+        });
+    }
+
+    protected processChangeStatus(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    delete(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/users/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processDelete(_response));
+        });
+    }
+
+    protected processDelete(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    getById(id: number): Promise<UserDto> {
+        let url_ = this.baseUrl + "/api/users/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processGetById(_response));
+        });
+    }
+
+    protected processGetById(response: Response): Promise<UserDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserDto;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserDto>(null as any);
+    }
+
+    getCurrent(): Promise<UserDto> {
+        let url_ = this.baseUrl + "/api/users/current";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.transformResult(url_, _response, (_response: Response) => this.processGetCurrent(_response));
+        });
+    }
+
+    protected processGetCurrent(response: Response): Promise<UserDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserDto;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserDto>(null as any);
     }
 }
 
@@ -765,6 +1130,7 @@ export interface RateDto extends BaseEntityDtoOfInteger {
     interviewerInterestRate: number;
     comment: string;
     questionsRate: number;
+    createdAt?: string;
     isConfirmed: boolean;
     recruiter?: RecruiterDto | undefined;
     company?: CompanyDto | undefined;
@@ -823,6 +1189,47 @@ export interface CreateOrUpdateRequiterCommand {
 export interface RecaptchaDto {
     success?: boolean;
     "error-codes"?: string[] | undefined;
+}
+
+export interface AuthenticateCommand {
+    email: string;
+    password: string;
+}
+
+export interface CreateUserCommand {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    firstName: string;
+    lastName: string;
+    companyName?: string | undefined;
+}
+
+export interface UserDto {
+    email?: string | undefined;
+    normalizedEmail?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    companyName?: string | undefined;
+    blocked?: boolean;
+    role?: Roles;
+    createdAt?: string;
+}
+
+export enum Roles {
+    Employer = "Employer",
+    Guest = "Guest",
+    Administrator = "Administrator",
+}
+
+export interface UpdateUserCommand {
+    id?: number;
+    email?: string | undefined;
+    password?: string | undefined;
+    confirmPassword?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    companyName?: string | undefined;
 }
 
 export class ApiException extends Error {

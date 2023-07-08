@@ -7,16 +7,35 @@ export type IntegrationApiErrorRespponse = {
 };
 
 export abstract class BaseClient {
-  transformResult(_url: string, _response: Response, processor: (_response: Response) => Promise<void | any>) {
+  transformOptions(options: any): any {
+    return {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: localStorage.getItem("token"),
+      },
+    };
+  }
+
+  transformResult(
+    _url: string,
+    _response: Response,
+    processor: (_response: Response) => Promise<void | any>
+  ) {
     const { status } = _response;
     if (status === INTERGTRATION_API_ERROR_CDOE) {
       _response
         .clone()
         .text()
         .then((_responseText) => {
-          const result = JSON.parse(_responseText) as IntegrationApiErrorRespponse;
+          const result = JSON.parse(
+            _responseText
+          ) as IntegrationApiErrorRespponse;
           document.dispatchEvent(
-            new CustomEvent<IntegrationApiErrorRespponse>(INTERGTRATION_API_ERROR_NOTIFICATION, { detail: result }),
+            new CustomEvent<IntegrationApiErrorRespponse>(
+              INTERGTRATION_API_ERROR_NOTIFICATION,
+              { detail: result }
+            )
           );
 
           return _responseText;

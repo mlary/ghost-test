@@ -2,12 +2,14 @@
 using GhostProject.App.Core.Business.Companies.Entities;
 using GhostProject.App.Core.Business.Rates.Entities;
 using GhostProject.App.Core.Business.Recruiters.Entities;
+using GhostProject.App.Core.Business.Users.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GhostProject.App.DataAccess
 {
     public class AppDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; } 
         public DbSet<Company> Companies { get; set; }
 
         public DbSet<Recruiter> Recruiters { get; set; }

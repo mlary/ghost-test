@@ -2,7 +2,7 @@ namespace GhostProject.App.Core.Business.Users.Primitives;
 
 public enum Roles
 {
-    Administrator,
-    Guest,
-    Employer,
+    Administrator = 3,
+    Guest = 2,
+    Employer = 1,
 }
