@@ -50,8 +50,8 @@ public class UsersController : AppControllerBase
     /// </summary>
     /// <response code="200">Token</response>
     [HttpPost("auth")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RecaptchaDto))]
-    public async Task<IActionResult> Authorize([FromBody]AuthenticateCommand command, CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    public async Task<IActionResult> Authenticate([FromBody]AuthenticateCommand command, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(command, cancellationToken);
         return Ok(response);
@@ -63,7 +63,7 @@ public class UsersController : AppControllerBase
     
     [HttpPost]
     [Authorize(Roles = UserRoles.Administrator)]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RecaptchaDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
     public async Task<IActionResult> Create([FromBody]CreateUserCommand command, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(command, cancellationToken);

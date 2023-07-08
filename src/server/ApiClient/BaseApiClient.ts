@@ -7,14 +7,12 @@ export type IntegrationApiErrorRespponse = {
 };
 
 export abstract class BaseClient {
-  transformOptions(options: any): any {
-    return {
-      ...options,
-      headers: {
-        ...options.headers,
-        Authorization: localStorage.getItem("token"),
-      },
-    };
+   transformOptions(options: RequestInit): Promise<RequestInit> {
+    const token = localStorage.getItem("token");
+    if(token){
+        options.headers = {...options.headers, "Authorization": `Bearer ${token}`,}
+    }
+    return Promise.resolve(options);
   }
 
   transformResult(

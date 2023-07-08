@@ -9,14 +9,12 @@
 // ReSharper disable InconsistentNaming
 
 export abstract class BaseClient {
-  transformOptions(options: any): any {
-    return {
-      ...options,
-      headers: {
-        ...options.headers,
-        Authorization: localStorage.getItem("token"),
-      },
-    };
+   transformOptions(options: RequestInit): Promise<RequestInit> {
+    const token = localStorage.getItem("token");
+    if(token){
+        options.headers = {...options.headers, "Authorization": `Bearer ${token}`,}
+    }
+    return Promise.resolve(options);
   }
 
   transformResult(
@@ -722,9 +720,9 @@ export interface IUsersClient {
 
     verify(token: string | null): Promise<RecaptchaDto>;
 
-    authorize(command: AuthenticateCommand): Promise<RecaptchaDto>;
+    authenticate(command: AuthenticateCommand): Promise<string>;
 
-    create(command: CreateUserCommand): Promise<RecaptchaDto>;
+    create(command: CreateUserCommand): Promise<UserDto>;
 
     update(command: UpdateUserCommand): Promise<UserDto>;
 
@@ -788,7 +786,7 @@ export class UsersClient extends BaseClient implements IUsersClient {
         return Promise.resolve<RecaptchaDto>(null as any);
     }
 
-    authorize(command: AuthenticateCommand): Promise<RecaptchaDto> {
+    authenticate(command: AuthenticateCommand): Promise<string> {
         let url_ = this.baseUrl + "/api/users/auth";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -806,17 +804,17 @@ export class UsersClient extends BaseClient implements IUsersClient {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.transformResult(url_, _response, (_response: Response) => this.processAuthorize(_response));
+            return this.transformResult(url_, _response, (_response: Response) => this.processAuthenticate(_response));
         });
     }
 
-    protected processAuthorize(response: Response): Promise<RecaptchaDto> {
+    protected processAuthenticate(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RecaptchaDto;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as string;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -824,10 +822,10 @@ export class UsersClient extends BaseClient implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RecaptchaDto>(null as any);
+        return Promise.resolve<string>(null as any);
     }
 
-    create(command: CreateUserCommand): Promise<RecaptchaDto> {
+    create(command: CreateUserCommand): Promise<UserDto> {
         let url_ = this.baseUrl + "/api/users";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -849,13 +847,13 @@ export class UsersClient extends BaseClient implements IUsersClient {
         });
     }
 
-    protected processCreate(response: Response): Promise<RecaptchaDto> {
+    protected processCreate(response: Response): Promise<UserDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as RecaptchaDto;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as UserDto;
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -863,7 +861,7 @@ export class UsersClient extends BaseClient implements IUsersClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<RecaptchaDto>(null as any);
+        return Promise.resolve<UserDto>(null as any);
     }
 
     update(command: UpdateUserCommand): Promise<UserDto> {
@@ -1196,6 +1194,24 @@ export interface AuthenticateCommand {
     password: string;
 }
 
+export interface UserDto {
+    id: number;
+    email: string;
+    normalizedEmail: string;
+    firstName: string;
+    lastName: string;
+    companyName?: string | undefined;
+    blocked?: boolean;
+    role: Roles;
+    createdAt: string;
+}
+
+export enum Roles {
+    Employer = "Employer",
+    Guest = "Guest",
+    Administrator = "Administrator",
+}
+
 export interface CreateUserCommand {
     email: string;
     password: string;
@@ -1203,23 +1219,6 @@ export interface CreateUserCommand {
     firstName: string;
     lastName: string;
     companyName?: string | undefined;
-}
-
-export interface UserDto {
-    email?: string | undefined;
-    normalizedEmail?: string | undefined;
-    firstName?: string | undefined;
-    lastName?: string | undefined;
-    companyName?: string | undefined;
-    blocked?: boolean;
-    role?: Roles;
-    createdAt?: string;
-}
-
-export enum Roles {
-    Employer = "Employer",
-    Guest = "Guest",
-    Administrator = "Administrator",
 }
 
 export interface UpdateUserCommand {

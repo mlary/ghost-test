@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Navigate, RouteObject, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import AppLayout from '~/components/AppLayout';
 import ConfirmRate from '~/pages/ConfirmRate';
+import Login from '~/pages/Login';
 import Rate from '~/pages/Rate/Rate';
 import Recruiter from '~/pages/Recruiter/Recruiter';
 
@@ -9,6 +10,10 @@ const routes: RouteObject[] = [
   {
     path: '/',
     element: <Recruiter />,
+  },
+  {
+    path: '/Login',
+    element: <Login />,
   },
   {
     path: '/rate',

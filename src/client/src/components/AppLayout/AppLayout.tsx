@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
 import { Suspense } from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import AppFooter from '../AppFooter/AppFooter';
 import AppHeader from '../AppHeader/AppHeader';
 import Spinner from '../Spinner';
@@ -13,9 +13,8 @@ const classes = {
     height: '100vh',
     width: '100vw',
     backgroundColor: 'var(--bg-main)',
-    overflow:"none",
-    overflowY: "auto",
-  
+    overflow: 'none',
+    overflowY: 'auto',
   }),
   container: css({
     display: 'block',
@@ -27,15 +26,19 @@ const classes = {
   }),
 };
 
-const AppLayout = () => (
-  <div css={classes.root}>
-    <AppHeader />
-    <div css={classes.container}>
-      <Suspense fallback={<Spinner size={100} />}>
-        <Outlet />
-      </Suspense>
+const AppLayout = () => {
+  const { pathname } = useLocation();
+  const showHeader = pathname.toUpperCase() === '/LOGIN';
+  return (
+    <div css={classes.root}>
+      {!showHeader && <AppHeader />}
+      <div css={classes.container}>
+        <Suspense fallback={<Spinner size={100} />}>
+          <Outlet />
+        </Suspense>
+      </div>
+      <AppFooter />
     </div>
-    <AppFooter />
-  </div>
-);
+  );
+};
 export default AppLayout;

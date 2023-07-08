@@ -89,7 +89,6 @@ const RecruiterLinkForm = ({ onComplete }: RecruiterLinkFormProps) => {
     validationSchema: recruiterLinkSchema,
     onSubmit: handleSubmit,
   });
-  console.log(formik);
   useEffect(() => {
     return () => {
       dispatch(resetRecaptcha());
