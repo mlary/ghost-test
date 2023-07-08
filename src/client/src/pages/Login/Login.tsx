@@ -4,8 +4,10 @@ import { Button, Card, TextField } from '@mui/material';
 import { FormikProvider, useFormik } from 'formik';
 import { useCallback } from 'react';
 import { AuthenticateCommand } from '~/app/ApiClient';
-import { useAppDispatch } from '~/app/store';
+import { useAppDispatch, useAppSelector } from '~/app/store';
+import Spinner from '~/components/Spinner/Spinner';
 import { authenticate } from '~/slices/users/usersSlice';
+import LoadingState from '~/types/LoadingState';
 import { getFormikFieldProps } from '~/utils/formikHelper';
 import { initialLoginFormData, loginFormSchema } from './LoginFormSchema';
 
@@ -37,6 +39,7 @@ const classes = {
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
+  const { authLoading } = useAppSelector((state) => state.users);
   const handleSubmit = useCallback((values: AuthenticateCommand) => {
     dispatch(authenticate(values));
   }, []);
@@ -50,6 +53,7 @@ const SignIn = () => {
       <FormikProvider value={formik}>
         <form onSubmit={formik.submitForm} autoComplete="off">
           <Card css={classes.card}>
+            {authLoading === LoadingState.pending && <Spinner />}
             <div css={classes.title}>Login</div>
             <div>
               <TextField {...getFormikFieldProps(formik, 'email')} type="email" fullWidth label="Email" />

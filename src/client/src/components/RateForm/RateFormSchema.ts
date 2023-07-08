@@ -21,7 +21,7 @@ export const initialRateFormData: RateFormData = {
   comment: '',
   visitedLinkedInProfile: AnswerTypes.Unknown,
   email: '',
-};
+};  
 export const rateFormSchema = yup.object().shape({
   commonRating: yup.number().required(VALIDATION_MESSAGES.enterRequiredField),
   interviewRound: yup.number().required(VALIDATION_MESSAGES.enterRequiredField),

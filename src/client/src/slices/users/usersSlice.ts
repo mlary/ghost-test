@@ -45,7 +45,7 @@ export const deleteUser = createAsyncThunk('users/deleteUser', async (id: number
   return response;
 });
 
-createSlice({
+const userSlice = createSlice({
   name: 'users',
   initialState: initialUsersState,
   reducers: {
@@ -114,11 +114,11 @@ createSlice({
     builder.addCase(updateUser.pending, (state) => {
       state.userLoading = LoadingState.pending;
     });
-    builder.addCase(createUser.fulfilled, (state, { payload }) => {
+    builder.addCase(updateUser.fulfilled, (state, { payload }) => {
       state.userLoading = LoadingState.succeed;
       state.users = state.users.map((row) => (row.id === payload.id ? payload : row));
     });
-    builder.addCase(createUser.rejected, (state) => {
+    builder.addCase(updateUser.rejected, (state) => {
       state.userLoading = LoadingState.failed;
     });
 
@@ -147,3 +147,5 @@ createSlice({
     });
   },
 });
+export const { resetCurrentUser, logout, resetUsers } = userSlice.actions;
+export default userSlice.reducer;

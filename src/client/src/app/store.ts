@@ -5,6 +5,8 @@ import company from '@slices/company/companySlice';
 import rate from '@slices/rate/rateSlice';
 import recaptcha from '@slices/recaptcha/recaptchaSlice';
 import recruiter from '@slices/recruiter/recruiterSlice';
+import users from '@slices/users/usersSlice';
+
 
 export const store = configureStore({
   reducer: {
@@ -12,7 +14,8 @@ export const store = configureStore({
     companies,
     company,
     recruiter,
-    recaptcha
+    recaptcha,
+    users,
   },
 });
 export type AppDispatch = typeof store.dispatch;
