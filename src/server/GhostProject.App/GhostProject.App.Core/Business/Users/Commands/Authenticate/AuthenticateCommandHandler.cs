@@ -1,7 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +20,7 @@ namespace GhostProject.App.Core.Business.Users.Commands.Authenticate;
 
 public class AuthenticateCommandHandler : HandlerBase<AuthenticateCommand, string>
 {
+    private const int DaysCount = 2;
     private readonly IUserRepository _userRepository;
     private readonly AuthConfiguration _authConfiguration;
     public AuthenticateCommandHandler(
@@ -58,7 +58,7 @@ public class AuthenticateCommandHandler : HandlerBase<AuthenticateCommand, strin
                 new Claim(ClaimTypes.Role,
                     ((Roles)user.RoleId).ToString())
             },
-            expires: DateTime.Now.AddDays(3),
+            expires: DateTime.Now.AddDays(DaysCount),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

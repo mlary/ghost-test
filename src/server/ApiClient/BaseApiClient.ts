@@ -1,3 +1,18 @@
+
+export function getCookie(cookieName: string): string | null {
+  const name = cookieName + '=';
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const cookies = decodedCookie.split(';');
+
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+    if (cookie.indexOf(name) === 0) {
+      return cookie.substring(name.length, cookie.length);
+    }
+  }
+
+  return null;
+}
 const INTERGTRATION_API_ERROR_CDOE = 527;
 export const INTERGTRATION_API_ERROR_NOTIFICATION = "ApiErrorNotification";
 export type IntegrationApiErrorRespponse = {
@@ -8,7 +23,7 @@ export type IntegrationApiErrorRespponse = {
 
 export abstract class BaseClient {
    transformOptions(options: RequestInit): Promise<RequestInit> {
-    const token = localStorage.getItem("token");
+    const token = getCookie("token");
     if(token){
         options.headers = {...options.headers, "Authorization": `Bearer ${token}`,}
     }

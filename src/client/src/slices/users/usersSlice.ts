@@ -1,14 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AuthenticateCommand, CreateUserCommand, IUsersClient, UpdateUserCommand, UsersClient } from '~/app/ApiClient';
 import LoadingState from '~/types/LoadingState';
+import { deleteCookie, setCookie } from '~/utils/cookieHelper';
 import { initialUsersState } from './usersState';
 
 const TOKEN = 'TOKEN';
+const TOKEN_EXPIRED_DAYS = 2;
 const userClient: IUsersClient = new UsersClient(process.env.REACT_APP_API_URL);
 
 export const authenticate = createAsyncThunk('users/authenticate', async (command: AuthenticateCommand) => {
   const response = await userClient.authenticate(command);
-  localStorage.setItem(TOKEN, response);
+  setCookie("token", response, TOKEN_EXPIRED_DAYS);
   return response;
 });
 
@@ -55,7 +57,7 @@ const userSlice = createSlice({
     logout: (state) => {
       state.authToken = null;
       state.current = null;
-      localStorage.removeItem(TOKEN);
+      deleteCookie(TOKEN);
     },
     resetUsers: (state) => {
       state.users = [];
